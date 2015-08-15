@@ -10,25 +10,24 @@ typedef struct {
 } JNINativeMethod;
 #endif
 
-jstring JNICALL c_hello(JNIEnv *env, jobject cls, jstring str)
+jint c_hello(JNIEnv *env, jobject cls, jintArray arr)
 {
-	//printf("this is c : %s\n", str);
-	//return "return from C";
-
-	const jbyte *cstr;
-	cstr = (*env)->GetStringUTFChars(env, str, NULL);
-	if (cstr == NULL) {
-		return NULL; /* OutOfMemoryError already thrown */
+	jint *carr;
+	jint i, sum = 0;
+	carr = (*env)->GetIntArrayElements(env, arr, NULL);
+	if (carr == NULL) {
+		return 0; /* exception occurred */
 	}
-	printf("Get string from java :%s\n", cstr);
-	(*env)->ReleaseStringUTFChars(env, str, cstr);
-
-	return (*env)->NewStringUTF(env, "return from c");
+	for (i=0; i< (*env)->GetArrayLength(env, arr); i++) {
+		sum += carr[i];
+	}
+	(*env)->ReleaseIntArrayElements(env, arr, carr, 0);
+	return sum;
 }
 
 
 static const JNINativeMethod methods[] = {
-	{"hello", "(Ljava/lang/String;)Ljava/lang/String;", (void *)c_hello},
+	{"hello", "([I)I", (void *)c_hello},
 };
 
 
