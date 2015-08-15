@@ -10,14 +10,15 @@ typedef struct {
 } JNINativeMethod;
 #endif
 
-void c_hello(JNIEnv *env, jobject cls)
+jint c_hello(JNIEnv *env, jobject cls, jint m)
 {
-	printf("Hello, world!\n");
+	printf("Hello, world! val = %d\n", m);
+	return 100;
 }
 
 
 static const JNINativeMethod methods[] = {
-	{"hello", "()V", (void *)c_hello},
+	{"hello", "(I)I", (void *)c_hello},
 };
 
 
